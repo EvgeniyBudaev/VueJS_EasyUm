@@ -1,0 +1,80 @@
+.todo-app {
+  margin: 40px auto 0 auto;
+  max-width: 500px;
+}
+
+/* Top panel */
+.top-panel {
+  margin: 10px 0;
+}
+
+/* Search panel */
+.search-input {
+  width: auto;
+  flex-grow: 1;
+  margin-right: 3px;
+}
+
+/* Todo list */
+.todo-list .list-group-item {
+  padding: 5px 15px;
+}
+
+.todo-list .list-group-item.hidden {
+  display: none;
+}
+
+.todo-list .list-group-item.visible {
+  display: block;
+}
+
+/* List item */
+.todo-list-item {
+  font-size: 20px;
+}
+
+.todo-list-item button {
+  width: 35px;
+  margin: 3px;
+}
+
+.todo-list-item-label {
+  margin-left: 20px;
+  line-height: 35px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.todo-list-item.done .todo-list-item-label {
+  text-decoration: line-through;
+}
+
+.todo-list-item.important .todo-list-item-label {
+  font-weight: bold;
+  color: steelblue;
+}
+
+/* Item add from */
+.item-add-form {
+  width: 100%;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.item-add-form input {
+  margin-right: 3px;
+}
+
+.category-selector {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.category-selector label {
+  margin-right: 5px;
+}
+
+.category-selector select {
+  width: 100%;
+}

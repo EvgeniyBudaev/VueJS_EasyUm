@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title>ДЗ</title>
+</head>
+<body>
+<!--
+Домшнее задание 1
+Отобразить заголовок "Привет, {{ name }}".
+Добавьте поле ввода и привяжите его к переменной name при помощи v-model
+Заголовок должен сразу изменяться каждый раз, когда пользователь
+что-либо вводит или изменяет в поле ввода.
+
+-->
+<div class="app">
+
+     <h1>Привет, {{ name }}</h1>
+    <input v-model="name">
+
+</div>
+
+<script>
+
+    let app = new Vue({
+        el:'.app',
+        data:{
+            name: ''
+        }
+    });
+
+</script>
+
+</body>
+</html>

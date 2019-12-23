@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    {{ style('style') }}
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<script src="components/app-header.js"></script>
+	<script src="components/todo-list-item.js"></script>
+	<script src="components/todo-list.js"></script>
+	<script src="components/item-add-form.js"></script>
+	<script src="components/search-panel.js"></script>
+	<script src="components/filter-button.js"></script>
+	<script src="components/item-status-filter.js"></script>
+	<script src="components/category-selector.js"></script>
+	<script src="todo-service.js"></script>
+    <title>Todo App</title>
+</head>
+
+<body>
+    <div id="app" class="todo-app">
+		<app-header></app-header>
+		<div class="top-panel d-flex">
+			<search-panel @on-search="onSearch"></search-panel>
+			<category-selector  :category-id="categoryId"
+								:categories="filterCategories"
+								:show-label="false"
+							    @on-select="onSelectFilterCategory"></category-selector>
+			<item-status-filter @on-click="onFilter"></item-status-filter>
+		</div>
+		<todo-list :todos="filteredTodos"
+					@on-delete-item="onDeleteItem"
+					@on-edit-item="onEditItem"
+					@on-toggle-done="onToggleDone"
+					@on-toggle-important="onToggleImportant"></todo-list>
+		<item-add-form :editable-item-label="editableItem.label" @on-add-item="onAddItem" @on-save-item="onSaveItem">
+		</item-add-form>
+		<category-selector  :category-id="categoryId"
+							:categories="categories"
+							@on-select="onSelectCategory"></category-selector>
+	</div>
+	<script>
+		var app = new Vue({
+			el: '#app',
+			data: {
+				maxId: 100,
+				todos: [
+					{ id: 1, label: 'Купить молока', done: false, important: false, category_id: 2 },
+					{ id: 2, label: 'Помыть полы', done: false, important: false, category_id: 2 },
+					{ id: 3, label: 'Пропылесосить', done: false, important: false, category_id: 2 },
+					{ id: 4, label: 'Позвонить боссу', done: false, important: false, category_id: 1 }
+				],
+				editableItem: { label: '' },
+				searchText: '',
+				filter: 'all',
+				categoryId: 1,
+				categories: [
+					{ id: 1, name: 'Работа' },
+					{ id: 2, name: 'Дом' },
+					{ id: 3, name: 'Учеба' }
+				],
+				filterCategoryId: 0
+			},
+			created: function() {
+			this.loadTodos();
+			},
+			computed: {
+				filteredTodos: function () {
+					// фильтруем по введеному тексту
+					var todos = this.todos.filter(todo => {
+						return todo.label.toLowerCase().indexOf(this.searchText.toLowerCase()) > -1
+					});
+					todos = this.todos.filter((el) => {
+						if (this.filterCategoryId < 1) return true; // вернем все Элементы todo
+						return el.category_id === this.filterCategoryId;
+					});
+					// фильтруем по активные/выполненные
+					todos = todos.filter(todo => {
+						if (this.filter === 'all') return true
+						else if (this.filter === 'done' && todo.done) return true
+						else if (this.filter === 'active' && !todo.done) return true
+						return false
+					})
+					return todos
+				},
+				filterCategories: function () {
+					const [ ...copy ] = this.categories;
+					copy.unshift({ id: 0, name: 'Все' });
+					return copy;
+				}
+			},
+			methods: {
+				onDeleteItem: function (id) {
+					const index = this.todos.findIndex(el => el.id === id)
+					this.todos.splice(index, 1)
+				},
+				onAddItem: function (label) {
+					const newTodo = {
+						id: ++this.maxId,
+						label: label,
+						important: false,
+						category_id: this.categoryId
+					}
+					this.todos.push(newTodo)
+					this.categoryId = 1;
+				},
+				findTodoIndex: function (id) {
+					return this.todos.findIndex(el => el.id === id)
+				},
+				onEditItem: function (id) {
+					// 1. Найти индекс элемента в массиве todo с id
+					// 2. В найденном элементе todo изменим label
+					const index = this.findTodoIndex(id);
+					this.editableItem = this.todos[index];
+					this.categoryId = this.editableItem.category_id;
+				},
+				onSaveItem: function (newLabel) {
+					this.editableItem.label = newLabel;
+					this.editableItem.category_id = this.categoryId;
+					this.categoryId = 1;
+					this.editableItem = { label: '' }
+				},
+				onToggleDone: function (id) {
+					const index = this.findTodoIndex(id)
+					this.todos[index].done = !this.todos[index].done
+				},
+				onSearch: function (text) {
+					// 1. В Цикле, либо с помочью функции встроенной ищем совподение
+					//    с значением в text
+					// 2. Все совподения сохранить в новый отфильтрованный список
+					this.searchText = text
+				},
+				onToggleImportant: function (id) {
+					const index = this.findTodoIndex(id)
+					this.todos[index].important = !this.todos[index].important
+				},
+				onFilter: function (name) {
+					this.filter = name
+				},
+				onSelectCategory: function (id) {
+					this.categoryId = id
+				},
+				onSelectFilterCategory: function (id) {
+					this.filterCategoryId = id;
+				},
+				loadTodos: async function {
+				const todoService = new TodoService();
+				try{
+				this.todos = await todoService.getAllTodos();
+				}
+				catch{
+				console.log("Что-то опошло не так", error);
+			  }
+			  }
+		})
+	</script>
+</body>
+</html>

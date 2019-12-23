@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Практика</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="components/app-header.js"></script>
+    <script src="components/todo-list.js"></script>
+    <script src="components/todo-list-item.js"></script>
+    <script src="components/item-add-form.js"></script>
+</head>
+<body>
+
+<div id="app" class="todo-app">
+    <app-header></app-header>
+    <todo-list v-bind:todos="todos"
+               v-on:on-delete-item="onDeleteItem">
+    </todo-list>
+    <item-add-form v-bind:editable-item-label="editableItem.label"
+                   v-on:on-add-item="onAddItem"></item-add-form>
+</div>
+
+<script>
+    let app = new Vue({
+       el: '#app',
+        data: {
+          todos: [
+              {id:1, label:'Разработать дизайн'},
+              {id:2, label:'Backend разработка'},
+              {id:3, label:'Frontend разработка'},
+          ],
+            editableItem: {label:''},
+        },
+        methods: {
+            onDeleteItem: function (id) {
+                const index = this.todos.findIndex((el) => el.id === id);
+                this.todos.splice(index, 1);
+            },
+            onAddItem: function (label) {
+                // 1. создать новый объект todo
+                // 2. добавить его в конец списка todos
+                const newTodo = { id: 4,
+                    label: label };
+                this.todos.push(newTodo);
+            },
+        },
+    });
+</script>
+
+</body>
+</html>

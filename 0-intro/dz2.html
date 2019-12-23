@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <title>ДЗ 2</title>
+</head>
+<body>
+<!--
+Отобразите приветствие в заголовке.
+Пользователь вводит имя. 
+Далее пользователь вводит свой пол:
+- eсли пользователь — мужчина, то заголовок приветствует пользователя как "Привет, мистер {{name}}".
+- eсли пользователь — женщина, то тогда вместо этого отображается "Привет, мисс {{name}}".
+- eсли пол пользователя ни мужчина, ни женщина, то пользователю отображается заголовок
+предупреждения с содержимым "Вы определитесь или как?".
+
+Подсказка: Логический оператор ИЛИ будет полезен при проверке пола
+-->
+<div class="app">
+  <div v-if="gender">
+    <h1 v-if="gender === 'male'">Привет, мистер {{ name }}</h1>
+    <h1 v-else>Привет, мисс {{ name }}</h1>
+  </div>
+  <h1 v-else>Вы определитесь или как?</h1>
+
+  <input v-model="name">
+  <input v-model="gender">
+
+</div>
+
+<script>
+
+  let app = new Vue({
+    el:'.app',
+    data:{
+      name: '',
+      gender:''
+    }
+  });
+
+</script>
+
+</body>
+</html>
